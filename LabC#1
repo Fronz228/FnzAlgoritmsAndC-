@@ -1,0 +1,15 @@
+#include "pch.h" #include #include
+
+using namespace std;
+
+int main() { struct Auto{ string nameOfAuto, producer, type; int finalDate , yearOfRefistration; };
+
+Auto mazda; Auto mazdaGT;
+
+mazdaAvensis.nameOfAuto = " Mazda"; mazdaAvensis.producer = "Japan"; mazdaAvensis.type = "sport car"; mazdaAvensis.finalDate = 2006; mazdaAvensis.yearOfRefistration = 2007;
+
+mazdaGT.nameOfAuto = " Mazda GT"; mazdaGT.producer = "Japan"; mazdaGT.type = "racing car"; mazdaGT.finalDate = 2005; mazdaGT.yearOfRefistration = 2007;
+
+cout << MazdanameOfAuto << " " << mazdavensis.producer << " " << mazdaAvensis.type << " " << mazdaAvensis.finalDate << " " << mazdaAvensis.yearOfRefistration << endl; cout << toyotaPrado.nameOfAuto << " " << mazdaGT6.producer << " " << MazdaGT.type << " " << MazdaGT.finalDate << " " << MazdaGT.yearOfRefistration << endl;
+
+return 0; }
