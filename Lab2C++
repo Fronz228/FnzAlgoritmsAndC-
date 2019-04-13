@@ -1,0 +1,100 @@
+#include "pch.h"
+#include <iostream>
+#include <string.h>
+
+
+using namespace std;
+
+  struct Book
+{
+  int Price;
+  char Name[15], Author[30], Date[10], From[23];
+
+};
+
+int main()
+{
+  setlocale(LC_ALL, "rus");
+  Book *p = new Book[1]; //объект структуры
+
+  int var = 1; // будем хранить выбор пользователя;
+  int size = 1; // размер массива структур;
+
+
+
+  while (var)
+  {
+    if (size == 1) //вношение данных в нолевой элемент 
+    {
+      cout << "Name" << endl;
+      cin >> p[size - 1].Name;
+      cout << "Price (in $)" << endl;
+      cin >> p[size - 1].Price;
+      cout << "Autor: " << endl;
+      cin >> p[size - 1].Author;
+      cout << "Date " << endl;
+      cin >> p[size - 1].Date;
+      cout << "Издательсто: " << endl;
+      cin >> p[size - 1].From;
+
+    }
+    else //size > 1
+    {
+      Book *copy = new Book[size - 1];
+      for (int i = 0; i < size - 1; i++)
+      {
+        strcpy(copy[i].Name, p[i].Name);
+        copy[i].Price = p[i].Price;
+        strcpy(p[i].Date, copy[i].Date);
+        strcpy(p[i].Author, copy[i].Author);
+        
+        
+      }
+
+      delete[] p;
+
+      p = new Book[size];
+
+      for (int i = 0; i < size - 1; i++) // обратное копирование в объект р
+      {
+        strcpy(copy[i].Name, p[i].Name);
+        copy[i].Price = p[i].Price;
+        strcpy(p[i].Date, copy[i].Date);
+        strcpy(p[i].Author, copy[i].Author);
+
+
+      }
+
+      delete[] copy;
+
+      cout << "Name" << endl;
+      cin >> p[size - 1].Name;
+      cout << "Price (in $)" << endl;
+      cin >> p[size - 1].Price;
+      cout << "Autor: " << endl;
+      cin >> p[size - 1].Author;
+      cout << "Date " << endl;
+      cin >> p[size - 1].Date;
+      cout << "Издательсто: " << endl;
+      cin >> p[size - 1].From;
+
+      for (int i = 0; i < size; i++)//выводим все данные  на экран
+      {
+        cout << i << "-е элементы структуры объекта Р:  " << p[i].Name << "  " << p[i].Price << ";\n";
+      }
+    }
+    size++;
+    cout << "\nВнести еще данные - 1, выход - 0: ";
+    cin >> var;
+    while (var != 0 && var != 1)//если пользователь ввел не 0 и не 1
+    {
+      cout << "Ошибка ввода!\n";
+      cout << "\nВнести еще данные - 1, выход - 0: ";
+      cin >> var;
+    }
+  }
+
+    delete[] p;//освобождение памяти перед завершением работы программы
+    return 0;
+
+}
