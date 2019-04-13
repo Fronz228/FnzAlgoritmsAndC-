@@ -1,0 +1,95 @@
+using System;
+using System.IO; 
+
+namespace Lab2
+{
+    class Program
+    {
+
+        class Tringle
+        {
+            public double longAB, longBC, longCA;
+
+
+           
+        }
+
+        static void Main(string[] args)
+        {
+            Tringle ABC = new Tringle(); // создание переменной треугольный
+            Console.WriteLine("День добрый!!! Введите длину АВ");
+            ABC.longAB = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("День добрый!!! Введите длину BC");
+            ABC.longBC = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("День добрый!!! Введите длину АC");
+            ABC.longCA = Convert.ToDouble(Console.ReadLine());
+
+            /*GetInfo(ABC.longAB, ABC.longBC, ABC.longCA);*/
+            Chosing(ABC.longAB, ABC.longBC, ABC.longCA); // обращение к функции, которая проверяет фигуру
+            /*double Per = Perimetr(ABC.longAB, ABC.longBC, ABC.longCA);*/ 
+
+
+
+
+
+
+
+            void Chosing(double A, double B, double C)
+            {
+                if (A + B > C && A + C > B && B + C > A)
+                {
+                    double Per = A + B + C;
+                    Console.WriteLine($"Периметр треугольника: {Per}");
+                    double CosAB = Angle(A, B, C);
+                    Console.WriteLine($"Cos AB: {CosAB}");
+                    double CosBC = Angle(B, C, A);
+                    Console.WriteLine($"Cos BC: {CosBC}");
+                    double CosAC = Angle(C, A, B);
+                    Console.WriteLine($"Cos AC: {CosAC}");
+                    double Squar = Sq(A, B, CosAB);
+                    Console.WriteLine($"Площадь треугольника равна: {Squar/2}");
+
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Я не знаю как закрыть программу, закройте сами (Press F5)");
+
+                }
+            }
+
+
+            double Sq(double A, double B, double COS)
+            {
+                double Sin = 1 - Math.Pow(COS, 2);
+                double Squ = (A*B*Sin);                
+                return Squ; 
+
+            }
+
+            double Angle(double A, double B, double C)
+            {
+                double AngleA = ((Math.Pow(C, 2) - Math.Pow(A, 2) + Math.Pow(B, 2)) / (2 * B * C));
+                return AngleA; 
+                
+
+            }
+
+
+            /*double Perimetr(double A, double B, double C)
+            {
+                Per = A + B + C;
+                Console.WriteLine($"Периметр треугольника: {Per}");
+                return Per; 
+            }
+            */
+            /*
+            void GetInfo(double AB, double BC, double AC)
+            {
+                Console.WriteLine($"AB: {AB}. BC: {BC}. AD: {AC}");
+            }
+            */
+            Console.ReadKey();
+        }
+    }
+}
