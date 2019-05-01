@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lab3ARt
+{
+    class Program
+    {
+
+        struct Time
+        {
+            public int Hour;
+            public int Minute;
+            public int Second;
+        }
+
+
+        static void Main(string[] args)
+        {
+            Time time1;
+            Console.WriteLine("Введите время в формате: ЧЧ, ММ, СС");
+            string str;
+            str = Console.ReadLine();
+
+            string[] TimeArray = str.Split(',');
+
+            time1.Hour = Convert.ToInt32(TimeArray[0]);
+            time1.Minute = Convert.ToInt32(TimeArray[1]);
+            time1.Second = Convert.ToInt32(TimeArray[2]);
+
+
+            time1.Hour = TimeCalculator(time1.Hour, time1.Minute);
+            time1.Minute = TimeCalculator(time1.Minute);
+            time1.Minute = TimeCalculator(time1.Minute, time1.Second);
+            time1.Second = TimeCalculator(time1.Second);
+
+            Console.WriteLine($"Время: {time1.Hour}  часов {time1.Minute}  минут {time1.Second} секунд");
+
+            /*------------------------------------------------------------------------------------------------------------------------------------------------------*/
+            Time time2;
+            Console.WriteLine("Введите второе время");
+            Console.WriteLine("Введите время в формате: ЧЧ, ММ, СС");
+            string str2;
+            str2 = Console.ReadLine();
+
+            string[] TimeArray2 = str2.Split(',');
+
+            time2.Hour = Convert.ToInt32(TimeArray[0]);
+            time2.Minute = Convert.ToInt32(TimeArray[1]);
+            time2.Second = Convert.ToInt32(TimeArray[2]);
+
+
+            time2.Hour = TimeCalculator(time1.Hour, time1.Minute);
+            time2.Minute = TimeCalculator(time1.Minute);
+            time2.Minute = TimeCalculator(time1.Minute, time1.Second);
+            time2.Second = TimeCalculator(time1.Second);
+
+            Console.WriteLine($"Время: {time1.Hour}  часов {time1.Minute}  минут {time1.Second} секунд");
+
+            Chosing(time1.Hour, time2.Hour);
+
+
+
+
+
+            Console.ReadKey();
+        }
+        public static int TimeCalculator(int t1, int t2)
+        {
+
+            while (t2 > 60)
+            {
+                t1++;
+                t2 = t2 - 60;
+            }
+            /*Console.WriteLine(T);*/
+            return t1;
+        }
+        public static int TimeCalculator(int t2)
+        {
+
+            while (t2 > 60)
+            {
+                t2 = t2 - 60;
+            }
+            /*Console.WriteLine(t2);*/
+            return t2;
+        }
+
+        public static bool Chosing(int t1, int t2)  
+            {
+            if (t1 > t2)
+            {
+                Console.WriteLine("T1>T2");
+                return true;
+            }
+
+            else
+            {
+                Console.WriteLine("T1>T2");
+                return false;
+            } 
+            
+            }
+    }
+
+
+
+}
