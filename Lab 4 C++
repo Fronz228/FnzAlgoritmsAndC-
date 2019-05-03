@@ -1,0 +1,38 @@
+# FnzAlgoritmsAndC-
+#include "pch.h"
+#include <iostream>
+
+using namespace std;
+
+int main()
+{  
+  setlocale(LC_ALL, "ru");
+    cout << " Взять в заданную строку в кавычки '<< >>'";
+
+  char Massive[10];
+  cin >> Massive;
+  char SecondMassive[14];
+
+
+  SecondMassive[0] = '<';
+  SecondMassive[1] = '<';
+
+  for (int i = 0; i < 10; i++)
+  {
+    SecondMassive[i + 2] = Massive[i];
+  }
+
+  for (int i = 0; i < 10; i++)
+  {
+    if (Massive[i] == NULL)
+    {
+      SecondMassive[i + 2] = '>';
+      SecondMassive[i + 3] = '>';
+    }
+  }
+
+  cout << endl; 
+  cout << SecondMassive;
+
+
+}
