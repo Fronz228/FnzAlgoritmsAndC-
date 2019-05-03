@@ -1,0 +1,26 @@
+# FnzAlgoritmsAndC-
+#include "pch.h"
+#include <iostream>
+
+using namespace std;
+
+
+int main()
+{  
+  setlocale(LC_ALL, "ru");
+  cout << "Введите массив символов из 10 єеллементов. Замените символы - цифры на сиволы '*' "<<endl << endl;
+  char Text[10];
+  cin >> Text;
+
+
+  for (int i = 0; i < 10; i++)
+  {
+    if (Text[i] == '0' || Text[i] == '1' || Text[i] == '2' || Text[i] == '3' || Text[i] == '4' || Text[i] == '5' || Text[i] == '6' || Text[i] == '7' || Text[i] == '8' || Text[i] == '9')
+    {
+      Text[i] = '*';
+    }
+  }
+
+  cout << endl << endl; 
+  cout << Text; 
+}
