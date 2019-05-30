@@ -1,119 +1,362 @@
-# FnzAlgoritmsAndC- Kurs 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Skripkin
+namespace KURSS
 {
     public partial class Form1 : Form
     {
-        SqlConnection sqlConnection;
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Skipkin\Skripkin\Skripkin\Film.mdf;Integrated Security=True";
 
+        OpenFileDialog openFileDialog;
+        SaveFileDialog saveFileDialog;
+
+        List<Film> films = new List<Film>();
         public Form1()
         {
+            openFileDialog = new OpenFileDialog();
+            saveFileDialog = new SaveFileDialog();
             InitializeComponent();
+        }
+
+        bool InputIsDigit(string st)
+        {
+            bool check = false;
+            int temp;
+            if (int.TryParse(st, out temp) == true && temp > 0)
+                check = true;
+
+            return check;
+        }
+
+        /// <summary>
+        /// обговление базых данных
+        /// </summary>
+        void UpdateT() 
+        {
+
+            dataGridView1.Rows.Clear();
+            foreach (var film in films)
+            {
+                dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+            }
+
+        }
+
+        //При скролинге 
+        private void TrackBar1_Scroll(object sender, EventArgs e)
+        {
+            label7.Visible = true;
+            label7.Text = String.Format($"{trackBar1.Value} %" );
+        }
+        private void TrackBar2_Scroll(object sender, EventArgs e)
+        {
+            label12.Visible = true;
+            label12.Text = String.Format($"{trackBar2.Value} %");
+        }
+
+        //Кнопка "Добавить"
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
+            if (InputIsDigit(textBox4.Text) || comboBox1.Text != null)
+            {
+                films.Add(new Film()
+                {
+                    FilmName = textBox1.Text,
+                    Director = textBox2.Text,
+                    MainRole = textBox3.Text,
+                    Release = Convert.ToInt32(comboBox1.Text),
+                    ViewersNum = Convert.ToInt32(textBox4.Text),
+                    Rating = trackBar1.Value
+                });
+            }
+            else
+            {
+                MessageBox.Show("Некорректный ввод!");
+            }
+
+            UpdateT();
+        }
+
+        //Кнопка "Обновить"
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            UpdateT();
+        }
+
+       //Кнопка "Изменить"
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            if (this.dataGridView1.SelectedRows.Count > 0 && this.dataGridView1.SelectedRows[0].Index != this.dataGridView1.Rows.Count - 1)
+            {
+
+                int index = this.dataGridView1.SelectedRows[0].Index;
+                if (InputIsDigit(textBox4.Text) || comboBox1.Text != null)
+                {
+                    films[index].FilmName = textBox1.Text;
+                    films[index].Director = textBox2.Text;
+                    films[index].MainRole = textBox3.Text;
+                    films[index].Release = Convert.ToInt32(comboBox1.Text);
+                    films[index].ViewersNum = Convert.ToInt32(textBox4.Text);
+                    films[index].Rating = trackBar1.Value;
+                }
+                else
+                {
+                    MessageBox.Show("Некорректный ввод!");
+                }
+
+            }
+            UpdateT();
+        }
+
+        //Кнопка "Удалить"
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            if (this.dataGridView1.SelectedRows.Count > 0 && this.dataGridView1.SelectedRows[0].Index != this.dataGridView1.Rows.Count - 1)
+            {
+                int row = this.dataGridView1.SelectedRows[0].Index;
+                this.dataGridView1.Rows.RemoveAt(row);
+                films.RemoveAt(row);
+            }
+            UpdateT();
+        }
+
+        private void ОткрытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+string filename = openFileDialog.FileName;
+
+            FileStream fsR = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fsR, Encoding.UTF8);
+
+            int length = br.ReadInt32();
+            for (int i = 0; i < length; i++)
+            {
+                films.Add(Film.Read(br));
+            }
+
+            dataGridView1.Rows.Clear();
+            UpdateT();
+            br.Close();
+            fsR.Close();
+        }
+
+        private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            string filename = saveFileDialog.FileName;
+            FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write);
+            BinaryWriter bw = new BinaryWriter(fs, Encoding.UTF8);
+
+            int length = films.Count;
+            bw.Write(length);
+
+            foreach (var film in films)
+                film.Write(bw);
+
+            bw.Close();
+            fs.Close();
+            MessageBox.Show("Файл сохранен");
+        }
+
+        private void ОчиститьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            films.Clear();
+            UpdateT();
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+            string keyWord = textBox5.Text;
+
+            bool flag = false;
+
+            switch (comboBox3.Text)
+            {
+                case "Фильм":
+                    foreach (var film in films)
+                    {
+                        if (film.FilmName ==keyWord)
+                        {
+                            dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                case "Режиссер":
+                    foreach (var film in films)
+                    {
+                        if (film.Director == keyWord)
+                        {
+                            dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                case "Главная роль":
+                    foreach (var film in films)
+                    {
+                        if (film.MainRole == keyWord)
+                        {
+                            dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                case "Премьера":
+                    foreach (var film in films)
+                    {
+                        if (film.Release == Convert.ToInt32(keyWord))
+                        {
+                            dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                case "Рейтинг":
+                    foreach (var film in films)
+                    {
+                        if (film.Rating == Convert.ToInt32(keyWord))
+                        {
+                            dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                case "Кол-во зрителей":
+                    foreach (var film in films)
+                    {
+                        if (film.ViewersNum == Convert.ToInt32(keyWord))
+                        {
+dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                            flag = true;
+                        }
+                    }
+                    break;
+                default:
+                    MessageBox.Show("Вы не выбрали поле!");
+                    break;
+            }
+            if (flag == false)
+            {
+                MessageBox.Show("Записи не найдены!");
+            }
+        }
+
+        private void ФильмыВышедшиеЗаПоследние3ГодаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var currentYear = DateTime.Now.Year;
+
+            dataGridView1.Rows.Clear();
+            bool flag = false;
+
+            foreach(var film in films)
+            {
+                if(currentYear - film.Release <= 3)
+                {
+                    dataGridView1.Rows.Add(film.FilmName, film.Director, film.MainRole, film.Release, film.Rating, film.ViewersNum);
+                    flag = true;
+                }
+            }
+            if(flag == false)
+            {
+                MessageBox.Show("Не удалось найти таких записей");
+            }
+        }
+
+        private void Button6_Click(object sender, EventArgs e)
+        {
+            string input = textBox6.Text;
+
+            foreach(var film in films)
+            {
+                if(film.MainRole == input)
+                {
+                    richTextBox1.Text += $"{film.FilmName} \n";
+                }
+            }
+        }
+
+        private void Button7_Click(object sender, EventArgs e)
+        {
+            string input = textBox7.Text;
+
+            foreach (var film in films)
+            {
+                if (film.FilmName == input)
+                {
+                    richTextBox2.Text += $"{film.Director} \n";
+                }
+            }
+        }
+
+        private void Button8_Click(object sender, EventArgs e)
+        {
+            
+            int viewnum = Convert.ToInt32(textBox8.Text);
+            if (comboBox2.Text != null && comboBox4.Text != null)
+            {
+                if (comboBox2.Text == "Повысить" && comboBox4.Text == "Больше")
+                {
+                    foreach (var film in films)
+                    {
+                        if (film.ViewersNum > viewnum)
+                        {
+                            film.Rating += trackBar2.Value;
+                        }
+                    }
+                }
+                else if (comboBox2.Text == "Повысить" && comboBox4.Text == "Меньше")
+                {
+                    foreach (var film in films)
+                    {
+                        if (film.ViewersNum < viewnum)
+                        {
+                            film.Rating += trackBar2.Value;
+                        }
+                    }
+                }
+                else if (comboBox2.Text == "Понизить" && comboBox4.Text == "Больше")
+                {
+                    foreach (var film in films)
+                    {
+                        if (film.ViewersNum > viewnum)
+                        {
+                            film.Rating -= trackBar2.Value;
+                        }
+                    }
+                }
+                else if (comboBox2.Text == "Понизить" && comboBox4.Text == "Меньше")
+                {
+                    foreach (var film in films)
+                    {
+                        if (film.ViewersNum < viewnum)
+                        {
+                            film.Rating -= trackBar2.Value;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Вы не выбрали параметры");
+            }
+
+             
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'filmDataSet1.Table' table. You can move, or remove it, as needed.
-            this.tableTableAdapter.Fill(this.filmDataSet1.Table);
-
-        }
-        private async void btnUpdate_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txbName.Text) && !string.IsNullOrWhiteSpace(txbName.Text) && !string.IsNullOrEmpty(txbActor.Text) && !string.IsNullOrWhiteSpace(txbActor.Text)
-               && !string.IsNullOrEmpty(txbDirector.Text) && !string.IsNullOrWhiteSpace(txbDirector.Text) && !string.IsNullOrEmpty(txbRating.Text) && !string.IsNullOrWhiteSpace(txbRating.Text)
-               && !string.IsNullOrEmpty(txbViewer.Text) && !string.IsNullOrWhiteSpace(txbViewer.Text) && !string.IsNullOrEmpty(txbYear.Text) && !string.IsNullOrWhiteSpace(txbYear.Text) &&
-                  !string.IsNullOrEmpty(txbId.Text) && !string.IsNullOrWhiteSpace(txbId.Text))
-            {
-                SqlConnection sqlConnection;
-                sqlConnection = new SqlConnection(connectionString);
-                await sqlConnection.OpenAsync();
-
-                SqlCommand command = new SqlCommand("UPDATE [Table] SET [FilmName] = @FilmName, [SurnameActor] = @SurnameActor, [Director] = @Director, [Year] = @Year, [Rating] = @Rating, [Viewers] = @Viewers WHERE  [Id] = @Id", sqlConnection);
-                command.Parameters.AddWithValue("Id", txbId.Text);
-                txbId.Clear();
-                command.Parameters.AddWithValue("FilmName", txbName.Text);
-                txbName.Clear();
-                command.Parameters.AddWithValue("Director", txbDirector.Text);
-                txbDirector.Clear();
-                command.Parameters.AddWithValue("SurnameActor", txbName.Text);
-                txbActor.Clear();
-                command.Parameters.AddWithValue("Year", txbYear.Text);
-                txbYear.Clear();
-                command.Parameters.AddWithValue("Rating", txbName.Text);
-                txbRating.Clear();
-                command.Parameters.AddWithValue("Viewers", txbName.Text);
-                txbViewer.Clear();
-                await command.ExecuteNonQueryAsync();
-
-                MessageBox.Show("Данные изменены", "Данные изменены", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Заполните все данные", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
-        private async void btnAdd_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txbName.Text) && !string.IsNullOrWhiteSpace(txbName.Text) && !string.IsNullOrEmpty(txbActor.Text) && !string.IsNullOrWhiteSpace(txbActor.Text)
-                && !string.IsNullOrEmpty(txbDirector.Text) && !string.IsNullOrWhiteSpace(txbDirector.Text) && !string.IsNullOrEmpty(txbRating.Text) && !string.IsNullOrWhiteSpace(txbRating.Text)
-                && !string.IsNullOrEmpty(txbViewer.Text) && !string.IsNullOrWhiteSpace(txbViewer.Text) && !string.IsNullOrEmpty(txbYear.Text) && !string.IsNullOrWhiteSpace(txbYear.Text))
-            {
-                sqlConnection = new SqlConnection(connectionString);
-                await sqlConnection.OpenAsync();
-                SqlCommand command = new SqlCommand("INSERT INTO [Table] (FilmName, Director, SurnameActor, Year, Rating, Viewers)VALUES(@FilmName, @Director, @SurnameActor, @Year, @Rating, @Viewers)", sqlConnection);
-command.Parameters.AddWithValue("FilmName", txbName.Text);
-                txbName.Clear();
-                command.Parameters.AddWithValue("Director", txbDirector.Text);
-                txbDirector.Clear();
-                command.Parameters.AddWithValue("SurnameActor", txbName.Text);
-                txbActor.Clear();
-                command.Parameters.AddWithValue("Year", txbYear.Text);
-                txbYear.Clear();
-                command.Parameters.AddWithValue("Rating", txbName.Text);
-                txbRating.Clear();
-                command.Parameters.AddWithValue("Viewers", txbName.Text);
-                txbViewer.Clear();
-
-                MessageBox.Show("Данные внесены", "Данные внесены", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await command.ExecuteNonQueryAsync();
-
-            }
-            else
-            {
-                MessageBox.Show("Заполните все данные", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-
-        }
-
-        private async void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txbId.Text) && !string.IsNullOrWhiteSpace(txbId.Text))
-            {
-                SqlConnection sqlConnection;
-                sqlConnection = new SqlConnection(connectionString);
-                await sqlConnection.OpenAsync();
-                SqlCommand command = new SqlCommand("DELETE FROM [Table] WHERE [Id] = @Id", sqlConnection);
-
-                MessageBox.Show("Данные были удалены", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                command.Parameters.AddWithValue("Id", txbId.Text);
-                txbId.Clear();
-
-                await command.ExecuteNonQueryAsync();
-            }
-            else
-            {
-                MessageBox.Show("Заполните все данные", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            }
 
         }
     }
