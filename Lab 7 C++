@@ -1,0 +1,88 @@
+# FnzAlgoritmsAndC-
+#include "pch.h"
+#include <stdarg.h>
+#include <iostream>
+using namespace std;
+const int N = 4; 
+struct Queue
+{
+	int data[N]; 
+	int last; 
+};
+void Creation(Queue *Q)
+{
+	Q->last = 0;
+}
+bool Full(Queue *Q) 
+{
+	if (Q->last == 0) return true;
+	else return false;
+}
+void Add(Queue *Q) 
+{
+	if (Q->last == N)
+	{
+		cout << "\nОчередь заполнена\n\n"; return;
+	}
+	int value;
+	cout << "\nЗначение > "; cin >> value;
+	Q->data[Q->last++] = value;
+	cout << endl << "Элемент добавлен в очередь\n\n";
+}
+void Delete(Queue *Q) //удаление элемента
+{
+	for (int i = 0; i < Q->last && i < N; i++) //смещение элементов
+		Q->data[i] = Q->data[i + 1]; Q->last--;
+}
+int Top(Queue *Q) //вывод начального элемента
+{
+	return Q->data[0];
+}
+int Size(Queue *Q) //размер очереди
+{
+	return Q->last;
+}
+void main() 
+{
+	setlocale(LC_ALL, "Rus");
+	Queue Q;
+	Creation(&Q);
+	char number;
+	do
+	{
+		cout << "1. Добавить элемент" << endl;
+		cout << "2. Удалить элемент" << endl;
+		cout << "3. Вывести верхний элемент" << endl;
+		cout << "4. Узнать размер очереди" << endl;
+		cout << "0. Выйти\n\n";
+		cout << "Номер команды > "; cin >> number;
+		switch (number)
+		{
+		case '1': Add(&Q);
+			break;
+			//-----------------------------------------------
+		case '2':
+			if (Full(&Q)) cout << endl << "Очередь пуста\n\n";
+			else
+			{
+				Delete(&Q);
+				cout << endl << "Элемент удален из очереди\n\n";
+			} break;
+			//-----------------------------------------------
+		case '3':
+			if (Full(&Q)) cout << endl << "Очередь пуста\n\n";
+			else cout << "\nНачальный элемент: " << Top(&Q) << "\n\n";
+			break;
+			//-----------------------------------------------
+		case '4':
+			if (Full(&Q)) cout << endl << "Очередь пуста\n\n";
+			else cout << "\nРазмер очереди: " << Size(&Q) << "\n\n";
+			break;
+			//-----------------------------------------------
+		case '0': break;
+		default: cout << endl << "Команда не определена\n\n";
+			break;
+		}
+	} while (number != '0');
+	system("pause");
+}
