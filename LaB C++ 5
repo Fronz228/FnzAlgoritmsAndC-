@@ -1,0 +1,89 @@
+# FnzAlgoritmsAndC-
+#include "pch.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std; 
+
+struct BaseAuto
+{
+	string Mark;
+	string Number;
+	string Port;
+	int Weight;
+	int Cost;
+
+};
+
+int main()
+{	
+	int cost;
+	setlocale(LC_ALL, "ru");	
+	string path = "Base.txt";
+	ofstream base;						//ofstream
+	ifstream ibase;
+
+	ibase.open(path);
+	if (!ibase.is_open())
+	{
+		cout << "Erorr #2";
+	}
+	else
+	{
+		char openBase;
+		while (ibase.get(openBase))
+		{	
+			cout << openBase;			
+		}
+
+
+	}
+	ibase.close();
+
+
+
+	base.open(path,ofstream::app);
+
+	BaseAuto Auto;
+
+	if (!base.is_open())
+	{
+		cout << "Erorr #1" << endl;
+	}
+	else
+	{	
+		cout << "\nВведите Марку Машины: ";
+		cin >> Auto.Mark;
+		base << "\nMark Car: ";
+		base << Auto.Mark;
+		cout << "Введите номер Машины: ";
+		cin >> Auto.Number;
+		base << "\nNumber Car: ";
+		base << Auto.Number;
+		cout << "Введите место прибытия груза: ";
+		cin >> Auto.Port;
+		base << "\nPort: ";
+		base << Auto.Port;
+		cout << "Введите Стоимость Машины: ";
+		cin >> Auto.Cost;
+		base << "\nCost Car: ";
+		base << Auto.Cost;
+		cout << "Введите вес Машины: (10 тонн максимум)";
+		cin >> Auto.Weight;
+		if (Auto.Weight >> 100)
+		{
+			while (Auto.Weight>>100)
+			{
+				cout << "Eroor";
+				cin >> Auto.Weight;
+			}
+		}
+		base << "\nWeight Car: ";
+		base << Auto.Weight;
+
+	}
+	base.close();
+}
+
+
