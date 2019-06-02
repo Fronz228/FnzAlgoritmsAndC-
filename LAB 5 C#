@@ -1,0 +1,111 @@
+# FnzAlgoritmsAndC-interface ISwitchable
+    {
+        void On();
+        void Off();
+    }
+
+    class TV: ISwitchable
+    {
+        const int min = 0;
+        const int max = 20;
+        int channel = 0;
+        int sound = 5;
+        string what;
+
+       public int Channel
+        {
+            get
+            {
+                return channel;
+            }
+            set
+            {
+                if (value > max)
+                    channel = max;
+                else if (value < min)
+                    channel = min;
+                else
+                    channel = value;
+
+            }
+        }
+        public int Sound
+        {
+            get
+            {
+                return sound;
+            }
+            set
+            {
+                if (value < min)
+                    sound = min;
+                else if (value > 15)
+                    sound = 15;
+                else
+                    sound = value;
+            }
+        }
+        string State;
+      public TV(string state)
+        {
+            State = state;
+        }
+       public void On()
+        {
+
+            Console.Write("Телик вкл.");
+            Console.WriteLine("Звук(s+|s-)/Канал(c+|c-)");
+            do
+            {
+                what = Console.ReadLine();
+                switch (what)
+                {
+                    case ("s+"):
+                        Sound++;
+                        Console.WriteLine("Звук : " + Sound);
+                        break;
+                    case ("s-"):
+                        Console.WriteLine("Звук : " + Sound);
+                        Sound--;
+                        break;
+                    case ("c+"):
+                        Channel++;
+                        Console.WriteLine("Канал : " + Channel);
+                        break;
+                    case ("c-"):
+                        Channel--;
+                        Console.WriteLine("Канал : " + Channel);
+                        break;
+                }
+            }
+            while (what != "Off");
+            {
+                Off();
+            }
+            
+
+        }
+       public void Off()
+        {
+            Console.Write("Телик выкл");
+        }
+
+    }
+    class Program 
+    { 
+        static void Main(string[] args)
+        {
+            TV tv = new TV("On");
+            string state = Console.ReadLine();
+            switch (state)
+            {
+                case ("On"):
+                    tv.On();
+                    break;
+                case ("Off"):
+                    tv.Off();
+                    break;
+            }
+            Console.ReadKey();
+        }
+    }
