@@ -1,0 +1,23 @@
+# FnzAlgoritmsAndC-
+//Ркурсивный метод расчета числа Фибоначчи 
+        private int fiboRe(int n)
+        {
+            int temp = 0;
+            if (n > 1) 
+                temp = fiboRe(n - 1) + fiboRe(n - 2);
+            else 
+                return 1;
+            return temp;
+        }
+ 
+ private void button1_Click(object sender, EventArgs e)
+        {
+            int n;
+            if (Convert.ToInt16(textBox1.Text) > 45)
+                MessageBox.Show("Слишком большое число, если число превысит 45, то это может привести к зависанию ПК!", "Внимание",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            else
+            {
+                n = int.Parse(textBox1.Text);
+                textBox2.Text = Convert.ToString(fiboRe(n));
+            }             
+        }
